@@ -1,76 +1,105 @@
 using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
+using HelixJump.Core.Extensions;
+using HelixJump.Core.Interfaces;
+using HelixJump.Core.Interfaces.Tower;
+using HelixJump.Core.Towers.Layers;
 
-
-    public interface IPlayer
+namespace HelixJump.Core
+{
+    public class Player : IPlayer
     {
-        
-    }
-
-    public interface ITowerLayer
-    {
-        public Resolution Resolution { get; }
-    }
-
-    public struct Resolution
-    {
-        public int Value { get; }
-        
-        public Resolution(int value)
+        public enum PlayerState
         {
-            Value = value;
-        }
-    }
-    
-    public interface ITowerLayerPart
-    {}
-    
-    public class TowerLayer : ITowerLayer
-    {
-        public IEnumerable<ITowerLayerPart> LayerParts { get; }
-        public Resolution Resolution { get; }
-
-        public TowerLayer(Resolution resolution, IEnumerable<ITowerLayerPart> layerParts)
-        {
-            Resolution = resolution;
-            
-            var towerLayerParts = layerParts as ITowerLayerPart[] ?? layerParts.ToArray();
-            
-            if (towerLayerParts.Length != Resolution.Value)
-                throw new IndexOutOfRangeException($"Enumerable: {layerParts.GetType()} does not match the tower resolution of tower {GetType()}");
-            
-            LayerParts = towerLayerParts;
+            Staying,
+            Hitting
         }
         
+        public PlayerState State { get; private set; }
         
-    }
-    
-    public interface ITower
-    {
-        
-    }
-    
-    public interface ITowerBuilder
-    {
-        public Task<ITower> BuildTowerAsync();
-    }
-    
-    public class Player
-    {
-        private float _xPosition;
-        public float XPosition
+        public int RowPosition { get; private set; }
+
+        private decimal _xPosition;
+
+        public decimal XPosition
         {
             get => _xPosition;
             private set
             {
-                if (value > 1)
-                    throw new IndexOutOfRangeException("Player position cannot be bigger than 1f");
-                
+                if (value is > 1 or < 0)
+                    throw new IndexOutOfRangeException("Player position cannot be bigger than 1f, or smaller than 0");
+
                 _xPosition = value;
             }
         }
+
+        public TaskCompletionSource<IHitInfo> PlayerHitTaskCompletionSource { get; } = new ();
+
+        private readonly ITower _baseTower;
+        private readonly TimeSpan _hitInterval;
+
+        public Player(ITower baseTower, TimeSpan hitInterval)
+        {
+            _baseTower = baseTower;
+            _hitInterval = hitInterval;
+        }
         
-        public int RowPosition { get; private set; }
+        public void Hit(IHitInfo hitInfo)
+        {
+            Destroy();
+            PlayerHitTaskCompletionSource.SetResult(hitInfo);
+        }
+
+        public void Destroy()
+        {
+            if (State == PlayerState.Hitting)
+                DisableHitMode();
+            
+        }
+
+        public void MoveForward(decimal position)
+        {
+            while (true)
+            {
+                var positionCapacity = 1 - _xPosition;
+            
+                if (position > positionCapacity)
+                {
+                    position -= positionCapacity;
+                    _xPosition = 0;
+                }
+                else
+                {
+                    _xPosition += position;
+                    break;
+                }
+            }
+        }
+        
+        public async void EnableHitMode()
+        {
+            State = PlayerState.Hitting;
+            while (State == PlayerState.Hitting)
+            {
+                await Task.Delay(_hitInterval.Milliseconds);
+                if (TryHitTopTowerLayer() == false)
+                    DisableHitMode();
+            }
+        }
+
+        private bool TryHitTopTowerLayer()
+        {
+            var topTowerLayer = _baseTower.GetTopTowerLayer();
+            if (topTowerLayer is  null)
+                return false;
+            
+            topTowerLayer.Hit(hittable: this, worldPosition: _xPosition);
+            return true;
+        }
+
+        public void DisableHitMode()
+        {
+            State = PlayerState.Staying;
+        }
     }
+}
