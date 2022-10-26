@@ -41,8 +41,63 @@
     <ImplicitlyExpandDesignTimeFacades>false</ImplicitlyExpandDesignTimeFacades>
   </PropertyGroup>
   <ItemGroup>
-     <Compile Include="Assets\Scripts\GameBuilder.cs" />
-     <Compile Include="Assets\Scripts\Game.cs" />
+     <Compile Include="Assets\Scripts\HelixJump\Core\Towers\Layers\Parts\UnbreakableTowerLayerPart.cs" />
+     <Compile Include="Assets\Scripts\HelixJump\Game\Extensions\TowerLayerExtensions.cs" />
+     <Compile Include="Assets\Scripts\HelixJump\Core\Utils\Resolution.cs" />
+     <Compile Include="Assets\Scripts\HelixJump\Core\Towers\Layers\Parts\WeaklyTowerLayerPart.cs" />
+     <Compile Include="Assets\Scripts\HelixJump\Core\Towers\Layers\Parts\AbstractTowerLayerPart.cs" />
+     <Compile Include="Assets\Scripts\HelixJump\GamePlay\Factories\TowerLayerPartViewFactory.cs" />
+     <Compile Include="Assets\Scripts\HelixJump\GamePlay\Factories\PlayerViewFactory.cs" />
+     <Compile Include="Assets\Scripts\HelixJump\GamePlay\Factories\TowerViewFactory.cs" />
+     <Compile Include="Assets\Scripts\HelixJump\GamePlay\GameEntry.cs" />
+     <Compile Include="Assets\Scripts\HelixJump\Game\Factories\TowerLayerFactory.cs" />
+     <Compile Include="Assets\Scripts\HelixJump\Game\Interfaces\ITowerLayerCreator.cs" />
+     <Compile Include="Assets\Scripts\HelixJump\Core\Interfaces\Tower\ITowerLayerPartModifier.cs" />
+     <Compile Include="Assets\Scripts\HelixJump\GamePlay\Interfaces\IGame.cs" />
+     <Compile Include="Assets\Scripts\HelixJump\Game\Arguments\TowerLayerPartArguments.cs" />
+     <Compile Include="Assets\Scripts\HelixJump\Core\Interfaces\Tower\ITowerLayerPart.cs" />
+     <Compile Include="Assets\Scripts\HelixJump\Game\Interfaces\ITowerLayerBuilder.cs" />
+     <Compile Include="Assets\Scripts\HelixJump\GamePlay\HelixJumpGameBuilder.cs" />
+     <Compile Include="Assets\Scripts\HelixJump\GamePlay\Views\PlayerView.cs" />
+     <Compile Include="Assets\Scripts\HelixJump\Core\Enums\PlayerState.cs" />
+     <Compile Include="Assets\Scripts\HelixJump\Game\Creators\DefaultTowerLayerCreator.cs" />
+     <Compile Include="Assets\Scripts\HelixJump\GamePlay\Views\ViewBase.cs" />
+     <Compile Include="Assets\Scripts\HelixJump\Core\Towers\GameTower.cs" />
+     <Compile Include="Assets\Scripts\HelixJump\GamePlay\HelixJumpGame.cs" />
+     <Compile Include="Assets\Scripts\HelixJump\Game\Arguments\TowerLayerArguments.cs" />
+     <Compile Include="Assets\Scripts\HelixJump\Core\Utils\HitInfo.cs" />
+     <Compile Include="Assets\Scripts\HelixJump\GamePlay\Views\Tower\TowerView.cs" />
+     <Compile Include="Assets\Scripts\HelixJump\GamePlay\Interfaces\IGameBuilder.cs" />
+     <Compile Include="Assets\Scripts\HelixJump\Core\Interfaces\IDestroyable.cs" />
+     <Compile Include="Assets\Scripts\HelixJump\Core\Interfaces\Tower\ITowerLayer.cs" />
+     <Compile Include="Assets\Scripts\HelixJump\Game\Extensions\ResolutionExtensions.cs" />
+     <Compile Include="Assets\Scripts\HelixJump\Core\Towers\Layers\TowerLayerBreakingInfo.cs" />
+     <Compile Include="Assets\Scripts\HelixJump\Core\Interfaces\Tower\ITower.cs" />
+     <Compile Include="Assets\Scripts\HelixJump\Debug\Tests\TowerLayerPartViewTests.cs" />
+     <Compile Include="Assets\Scripts\HelixJump\Game\Input\PlayerInput.cs" />
+     <Compile Include="Assets\Scripts\HelixJump\Debug\UnityDebug.cs" />
+     <Compile Include="Assets\Scripts\HelixJump\Game\Interfaces\ITowerLayerPartCreator.cs" />
+     <Compile Include="Assets\Scripts\HelixJump\Game\Arguments\TowerArguments.cs" />
+     <Compile Include="Assets\Scripts\HelixJump\Core\Interfaces\IPlayer.cs" />
+     <Compile Include="Assets\Scripts\HelixJump\Game\Factories\TowerLayerPartsFactory.cs" />
+     <Compile Include="Assets\Scripts\HelixJump\Core\Enums\Tower\TowerLayerPartType.cs" />
+     <Compile Include="Assets\Scripts\HelixJump\GamePlay\Views\Tower\TowerLayerPartView.cs" />
+     <Compile Include="Assets\Scripts\HelixJump\Core\Interfaces\IHitInfo.cs" />
+     <Compile Include="Assets\Scripts\HelixJump\Game\Interfaces\IUpdatable.cs" />
+     <Compile Include="Assets\Scripts\HelixJump\Game\Builders\RandomTowerBuilder.cs" />
+     <Compile Include="Assets\Scripts\HelixJump\Core\Player.cs" />
+     <Compile Include="Assets\Scripts\HelixJump\Core\Utils\Rotation.cs" />
+     <Compile Include="Assets\Scripts\HelixJump\Core\Towers\Layers\Parts\TowerLayerPartHitInfo.cs" />
+     <Compile Include="Assets\Scripts\HelixJump\GamePlay\Views\Tower\TowerLayerView.cs" />
+     <Compile Include="Assets\Scripts\HelixJump\Core\Enums\Tower\TowerType.cs" />
+     <Compile Include="Assets\Scripts\HelixJump\Game\Interfaces\IObjectPoolObject.cs" />
+     <Compile Include="Assets\Scripts\HelixJump\Core\Towers\Layers\DefaultTowerLayer.cs" />
+     <Compile Include="Assets\Scripts\HelixJump\GamePlay\Factories\TowerLayerViewFactory.cs" />
+     <Compile Include="Assets\Scripts\HelixJump\Core\Interfaces\IHittable.cs" />
+     <Compile Include="Assets\Scripts\HelixJump\Core\Towers\Layers\TowerLayerHitInfo.cs" />
+     <Compile Include="Assets\Scripts\HelixJump\GamePlay\Factories\GameObjectFactory.cs" />
+     <Compile Include="Assets\Scripts\HelixJump\Game\Input\DefaultInput.cs" />
+     <Compile Include="Assets\Scripts\HelixJump\Game\Interfaces\ITowerBuilder.cs" />
      <Reference Include="UnityEngine">
      <HintPath>C:\Program Files\Unity\Hub\Editor\2021.3.9f1\Editor\Data\Managed\UnityEngine\UnityEngine.dll</HintPath>
      </Reference>

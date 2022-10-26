@@ -14,13 +14,13 @@ namespace HelixJump.Tests
         [Fact]
         public void TowerLayerConstructionTest()
         {
-            TowerLayer towerLayer = null;
-            TowerLayer towerLayer2 = null;
+            DefaultTowerLayer towerLayer = null;
+            DefaultTowerLayer towerLayer2 = null;
             
-            try { towerLayer = new TowerLayer(new Resolution(5), new Rotation(), new ITowerLayerPart[5]); }
+            try { towerLayer = new DefaultTowerLayer(new Resolution(5), new Rotation(), new ITowerLayerPart[5]); }
             catch(Exception ex) { towerLayer = null; }
 
-            try { towerLayer2 = new TowerLayer(new Resolution(0), new Rotation(), new ITowerLayerPart[0]); }
+            try { towerLayer2 = new DefaultTowerLayer(new Resolution(0), new Rotation(), new ITowerLayerPart[0]); }
             catch (Exception ex) { towerLayer2 = null; }
             
             Assert.True(towerLayer == null);
@@ -30,7 +30,7 @@ namespace HelixJump.Tests
         [Fact]
         public async void TowerLayerDestroyingTests()
         {
-            var towerLayer = new TowerLayer(new Resolution(0), new Rotation(), new ITowerLayerPart[0]);
+            var towerLayer = new DefaultTowerLayer(new Resolution(0), new Rotation(), new ITowerLayerPart[0]);
             var callbacksList = new List<int>();
             int ft = 1, sc = 2, td = 3, fs = 4;
             OnTowerLayerDestroyed(ft);

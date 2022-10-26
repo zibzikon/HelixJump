@@ -50,18 +50,34 @@
         <Reference Include="xunit.execution.desktop, Version=2.1.0.3179, Culture=neutral, PublicKeyToken=8d05b1bb7a6fdb6c">
             <HintPath>..\packages\xunit.extensibility.execution.2.1.0\lib\net45\xunit.execution.desktop.dll</HintPath>
         </Reference>
+        <Reference Include="YamlDotNet, Version=12.0.0.0, Culture=neutral, PublicKeyToken=ec19458f3c15af5e, processorArchitecture=MSIL">
+          <HintPath>..\packages\YamlDotNet.12.0.2\lib\net47\YamlDotNet.dll</HintPath>
+        </Reference>
     </ItemGroup>
     <ItemGroup>
+        <Compile Include="DeserializationTests.cs" />
         <Compile Include="PlayerTests.cs" />
+        <Compile Include="SerializationTests.cs" />
         <Compile Include="TowerLayerTests.cs" />
         <Compile Include="Properties\AssemblyInfo.cs" />
         <Compile Include="TowerTests.cs" />
     </ItemGroup>
     <ItemGroup>
+      <ProjectReference Include="..\Assembly-CSharp.csproj">
+        <Project>{1d50a0f2-27e4-f7d9-20e3-ce7643f1072d}</Project>
+        <Name>Assembly-CSharp</Name>
+      </ProjectReference>
       <ProjectReference Include="..\HelixJump.Core\HelixJump.Core.csproj">
         <Project>{b5b47a04-c0e7-49a7-aa1f-7d591e989c7f}</Project>
         <Name>HelixJump.Core</Name>
       </ProjectReference>
+      <ProjectReference Include="..\HelixJump\HelixJump.csproj">
+        <Project>{28b80421-106c-491c-91cd-92257fa9055e}</Project>
+        <Name>HelixJump</Name>
+      </ProjectReference>
+    </ItemGroup>
+    <ItemGroup>
+      <None Include="packages.config" />
     </ItemGroup>
     <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
     <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

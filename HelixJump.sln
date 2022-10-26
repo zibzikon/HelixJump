@@ -1,11 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 11.00
 # Visual Studio 2010
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Assembly-CSharp", "Assembly-CSharp.csproj", "{1D50A0F2-27E4-F7D9-20E3-CE7643F1072D}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HelixJump.Core", "HelixJump.Core\HelixJump.Core.csproj", "{B5B47A04-C0E7-49A7-AA1F-7D591E989C7F}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HelixJump.Tests", "HelixJump.Tests\HelixJump.Tests.csproj", "{F445FA6B-6900-4673-AA4C-932E25A076E5}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Assembly-CSharp", "Assembly-CSharp.csproj", "{1d50a0f2-27e4-f7d9-20e3-ce7643f1072d}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -14,10 +10,6 @@ Global
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
 		{1d50a0f2-27e4-f7d9-20e3-ce7643f1072d}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{1d50a0f2-27e4-f7d9-20e3-ce7643f1072d}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{B5B47A04-C0E7-49A7-AA1F-7D591E989C7F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{B5B47A04-C0E7-49A7-AA1F-7D591E989C7F}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{F445FA6B-6900-4673-AA4C-932E25A076E5}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{F445FA6B-6900-4673-AA4C-932E25A076E5}.Debug|Any CPU.Build.0 = Debug|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

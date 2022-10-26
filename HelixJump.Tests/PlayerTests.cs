@@ -14,7 +14,7 @@ namespace HelixJump.Tests
         public void MoveForwardTests()
         {
             var resolution = new Resolution(2);
-            var tower = new GameTower(new []{new TowerLayer(resolution, new Rotation(), new ITowerLayerPart[2]{new UnbreakableTowerLayerPart(), new WeaklyTowerLayerPart()})});
+            var tower = new GameTower(new []{new DefaultTowerLayer(resolution, new Rotation(), new ITowerLayerPart[2]{new UnbreakableTowerLayerPart(), new WeaklyTowerLayerPart()})});
             var player = new Player(tower, new TimeSpan(0,0,0,0,500));
             
             player.MoveForward(2.34m);
