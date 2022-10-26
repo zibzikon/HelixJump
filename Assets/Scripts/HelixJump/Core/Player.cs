@@ -48,7 +48,7 @@ namespace HelixJump.Core
         public void Hit(IHitInfo hitInfo)
         {
             Destroy();
-            PlayerHitTaskCompletionSource.SetResult(hitInfo);
+            PlayerHitTaskCompletionSource.TrySetResult(hitInfo);
         }
 
         public void Destroy()
@@ -83,6 +83,7 @@ namespace HelixJump.Core
                 await Task.Delay(_hitInterval.Milliseconds);
                 if (TryHitTopTowerLayer() == false)
                     DisableHitMode();
+                
             }
         }
         

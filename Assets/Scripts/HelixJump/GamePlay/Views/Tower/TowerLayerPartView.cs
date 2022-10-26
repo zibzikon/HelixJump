@@ -21,10 +21,10 @@ namespace HelixJump.GamePlay.Views.Tower
             _towerLayerPartModel = towerLayerPartModel;
             transform.localRotation = Quaternion.Euler(0, rotation.Value, 0);
             _destroyingAnimationEndedTaskCompletionSource = new TaskCompletionSource<bool>();
-            OnTowerLayerPartModelDestroyed();
+           OnTowerLayerPartModelDestroyedAsync();
         }
         
-        private async void OnTowerLayerPartModelDestroyed()
+        private async void OnTowerLayerPartModelDestroyedAsync()
         {
             await _towerLayerPartModel.DestroyedTaskCompletionSource.Task;
             await PlayDestroyingAnimation();

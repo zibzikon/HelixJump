@@ -25,7 +25,7 @@ namespace HelixJump.Game.Input
 
         private void EnablePlayerHitMode()
         {
-            Task.Run(()=> _player.EnableHitMode());
+            _player.EnableHitMode();
         }
 
         private void DisablePlayerHitMode()

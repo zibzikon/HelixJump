@@ -24,7 +24,7 @@ namespace HelixJump.GamePlay.Views.Tower
             var localScale = _pipe.localScale;
             var yScale = (_towerModel.Resolution.Value * layersPadding);
             
-            // idk whats is this number means, but its work 
+            // id`k whats is this number means, but its work 
             var magic = 5f;
             
             var defaultPipeScale = 1;

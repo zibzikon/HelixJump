@@ -32,12 +32,12 @@ namespace HelixJump.Core.Towers.Layers
             _parts = towerLayerParts;
             
             foreach (var towerLayerPart in _parts)
-                OnTowerLayerPartBreak(towerLayerPart, _asyncMethodsAfterDestroyingCancellationTokenSource.Token);
+                OnTowerLayerPartBreakAsync(towerLayerPart, _asyncMethodsAfterDestroyingCancellationTokenSource.Token);
         }
 
-        private async void OnTowerLayerPartBreak(ITowerLayerPart towerLayerPart, CancellationToken cancellationToken)
+        private async void OnTowerLayerPartBreakAsync(ITowerLayerPart towerLayerPart, CancellationToken cancellationToken)
         {
-            await towerLayerPart.BreakTaskCompletionSource.Task;
+            await towerLayerPart.BrokenTaskCompletionSource.Task;
             if (cancellationToken.IsCancellationRequested)
                 return;
            
@@ -54,8 +54,7 @@ namespace HelixJump.Core.Towers.Layers
         
         public void Destroy()
         {
-            _asyncMethodsAfterDestroyingCancellationTokenSource.Cancel();
-            DestroyedTaskCompletionSource.SetResult(true);
+            DestroyedTaskCompletionSource.TrySetResult(true);
             
             foreach (var towerLayerPart in _parts)
                 towerLayerPart.Destroy();

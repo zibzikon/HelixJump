@@ -15,6 +15,7 @@ using HelixJump.GamePlay.Factories;
 using HelixJump.Interfaces;
 using UnityEngine;
 using UnityEngine.Serialization;
+using UnityEngine.UIElements;
 using Resolution = HelixJump.Core.Utils.Resolution;
 
 namespace HelixJump.Debug
@@ -42,29 +43,46 @@ namespace HelixJump.Debug
         private CancellationTokenSource _testStop = new();
 
         private readonly List<IUpdatable> _contentToUpdate = new ();
-        
+
+        private readonly List<ITowerLayerPart> _towerLayerParts = new();
         private void Start()
         {
             _towerLayerPartViewFactory.Initialize();
             _towerLayerViewFactory.Initialize(_towerLayerPartViewFactory);
             _towerViewFactory.Initialize(_towerLayerViewFactory);
+            // for (int i = 0; i < 10; i++)
+            // {
+            //     var towerLayerPart = new WeaklyTowerLayerPart();
+            //     StartWaitingForTaskCompletionAsync(towerLayerPart, CancellationToken.None);
+            //     _towerLayerParts.Add(towerLayerPart);
+            // }
         }
 
-        private async void StartWaitingForTaskCompletion(CancellationToken cancellationToken)
+        private async void StartWaitingForTaskCompletionAsync(ITowerLayerPart towerLayerPart ,CancellationToken cancellationToken)
         {
+            await towerLayerPart.BrokenTaskCompletionSource.Task;
 
-            while (!cancellationToken.IsCancellationRequested)
-            {
-                UnityEngine.Debug.Log("Hello");
-                await Task.Delay(100);
-            }    
+            if (cancellationToken.IsCancellationRequested)
+                return;
+            
+            DestroyAllTowerLayerParts();    
         }
+
+        private void DestroyAllTowerLayerParts()
+        {
+            foreach (var towerLayerPart in _towerLayerParts)
+            {
+                towerLayerPart.Destroy();
+            }
+        }
+        
         private void Update()
         {
             _contentToUpdate.ForEach(updatable => updatable.OnUpdate());
             
             if (!_createTower) return;
-            CreateTestTower();
+            CreateTestTower();;
+            //_towerLayerParts[0].Break();
             _createTower = false;
         }
 

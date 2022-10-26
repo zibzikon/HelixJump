@@ -12,7 +12,7 @@ namespace HelixJump.Core.Towers.Layers.Parts
         
         public abstract TowerLayerPartType Type { get; }
         
-        public TaskCompletionSource<bool> BreakTaskCompletionSource { get; protected set; } = new();
+        public TaskCompletionSource<bool> BrokenTaskCompletionSource { get; protected set; } = new();
 
         public TaskCompletionSource<bool> DestroyedTaskCompletionSource { get; protected set; }  = new (); 
 
@@ -36,12 +36,13 @@ namespace HelixJump.Core.Towers.Layers.Parts
 
         public virtual void Destroy()
         {
-            DestroyedTaskCompletionSource.SetResult(true);
+            DestroyedTaskCompletionSource.TrySetResult(true);
         }
         
         public void Break()
         {
-            BreakTaskCompletionSource.SetResult(true);
+            if(BrokenTaskCompletionSource.TrySetResult(true))
+                UnityEngine.Debug.Log("AAAAAAAAAA");
         }
        
     }
