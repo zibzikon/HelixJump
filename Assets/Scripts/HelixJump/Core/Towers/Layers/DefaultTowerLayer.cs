@@ -13,10 +13,11 @@ namespace HelixJump.Core.Towers.Layers
     {
         private readonly ITowerLayerPart[] _parts;
         public Resolution Resolution { get;  }
-        public TaskCompletionSource<bool> DestroyedTaskCompletionSource { get; protected set; }  = new (); 
+        private TaskCompletionSource<bool> _destroyedTaskCompletionSource = new (); 
         public Rotation Rotation { get; }
         private readonly CancellationTokenSource _asyncMethodsAfterDestroyingCancellationTokenSource = new ();
-        
+
+        public Task<bool> DestroyedTask => _destroyedTaskCompletionSource.Task;
         public DefaultTowerLayer(Resolution resolution, Rotation rotation, IEnumerable<ITowerLayerPart> layerParts)
         {
             Resolution = resolution;
@@ -37,7 +38,7 @@ namespace HelixJump.Core.Towers.Layers
 
         private async void OnTowerLayerPartBreakAsync(ITowerLayerPart towerLayerPart, CancellationToken cancellationToken)
         {
-            await towerLayerPart.BrokenTaskCompletionSource.Task;
+            await towerLayerPart.BrokenTask;
             if (cancellationToken.IsCancellationRequested)
                 return;
            
@@ -51,10 +52,11 @@ namespace HelixJump.Core.Towers.Layers
 
             return _parts[position];
         }
-        
+
+
         public void Destroy()
         {
-            DestroyedTaskCompletionSource.TrySetResult(true);
+            _destroyedTaskCompletionSource.TrySetResult(true);
             
             foreach (var towerLayerPart in _parts)
                 towerLayerPart.Destroy();

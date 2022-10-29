@@ -152,13 +152,16 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 71843995b4c24ed7b46da86b6066d718, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _createTower: 0
-  _towerResolution: 10
-  _towerLayersPadding: 0.4
-  _towerLayerPartViewFactory: {fileID: 11400000, guid: 02ade4b4b306dee4abefee8ab759385e, type: 2}
-  _towerLayerViewFactory: {fileID: 11400000, guid: e0d8d2ba215462b49820a5b77fcee74d, type: 2}
-  _towerViewFactory: {fileID: 11400000, guid: 42e3f24e2726d394c977df7640eca6c4, type: 2}
-  _playerViewFactory: {fileID: 11400000, guid: 1936f5aeab660974cb4c5ba8fbc3d2c9, type: 2}
+  createTower: 0
+  towerResolution: 100
+  towerLayersPadding: 0.4
+  breakTowerLayerPart: 0
+  towerLayerPosition: {x: 0, y: 0}
+  towerLayerPartViewBuilder: {fileID: 11400000, guid: 02ade4b4b306dee4abefee8ab759385e, type: 2}
+  towerLayerViewBuilder: {fileID: 11400000, guid: e0d8d2ba215462b49820a5b77fcee74d, type: 2}
+  towerViewBuilder: {fileID: 11400000, guid: 42e3f24e2726d394c977df7640eca6c4, type: 2}
+  towerLayerPartViewPrefabsContainer: {fileID: 11400000, guid: 3086bfcae58cd5144be485a98c0f21a1, type: 2}
+  playerViewBuilder: {fileID: 11400000, guid: 1936f5aeab660974cb4c5ba8fbc3d2c9, type: 2}
 --- !u!4 &623618424
 Transform:
   m_ObjectHideFlags: 0

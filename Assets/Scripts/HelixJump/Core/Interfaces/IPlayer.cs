@@ -1,17 +1,21 @@
 using HelixJump.Core.Enums;
 using HelixJump.Core.Interfaces.Tower;
+using HelixJump.Core.Utils;
 
 namespace HelixJump.Core.Interfaces
 {
     public interface IPlayer : IHittable
     {
+        Score Score { get; }
         ITower BaseTower { get; }
         PlayerState State { get; }
+        Position Position { get; }
         void DisableHitMode();
         void EnableHitMode();
-        public void StartMoving();
+        void ChangeBaseTower(ITower tower);
+        void StartMoving();
         void StopMoving();
-        int RowPosition { get; }
-        float XPosition { get; }
+        void AddScore(int score);
+        void RemoveScore(int score);
     }
 }

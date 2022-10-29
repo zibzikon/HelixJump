@@ -5,38 +5,32 @@ using System.Threading.Tasks;
 using HelixJump.Core.Enums;
 using HelixJump.Core.Interfaces;
 using HelixJump.Core.Interfaces.Tower;
+using HelixJump.Core.Utils;
 using HelixJump.Game.Extensions;
 
 namespace HelixJump.Core
 {
     public class Player : IPlayer
     {
-        private float _xPosition;
+        
+        public PlayerState State { get; private set; }
+
+        public TaskCompletionSource<IHitInfo> PlayerHitTaskCompletionSource { get; } = new ();
+
+        public Score Score { get; private set; }
+        public ITower BaseTower { get; private set; }
+
+        public Position Position 
+        { 
+            get => _position = new Position(BaseTower.Capacity.Value, _position.XPosition); 
+            private set => _position = value; 
+        }
 
         private CancellationTokenSource _movingCancellationTokenSource = new ();
         
         private readonly TimeSpan _hitInterval;
         private readonly TimeSpan _movingInterval;
-        
-        public PlayerState State { get; private set; }
-
-        public TaskCompletionSource<IHitInfo> PlayerHitTaskCompletionSource { get; } = new ();
-        
-        public int RowPosition => BaseTower.TowerLayers.Count();
-
-        public ITower BaseTower { get; }
-
-        public float XPosition
-        {
-            get => _xPosition;
-            private set
-            {
-                if (value is > 1 or < 0)
-                    throw new IndexOutOfRangeException("Player position cannot be bigger than 1f, or smaller than 0");
-
-                _xPosition = value;
-            }
-        }
+        private Position _position;
 
         public Player(ITower baseTower, TimeSpan hitInterval , TimeSpan movingInterval)
         {
@@ -75,50 +69,54 @@ namespace HelixJump.Core
             _movingCancellationTokenSource = new CancellationTokenSource();
         }
 
-        public async void EnableHitMode()
+        public void AddScore(int score)
+        {
+            Score = new Score(Score.Value + score);
+        }
+
+        public void RemoveScore(int score)
+        {
+            Score = new Score(Score.Value - score);
+        }
+
+        public void EnableHitMode()
         {
             State = PlayerState.Hitting;
-            while (State == PlayerState.Hitting)
+            Task.Run(async () =>
             {
-                await Task.Delay(_hitInterval.Milliseconds);
-                if (TryHitTopTowerLayer() == false)
-                    DisableHitMode();
-                
-            }
+                while (State == PlayerState.Hitting)
+                {
+                    if (TryHitTopTowerLayer() == false)
+                        DisableHitMode();
+                    await Task.Delay(_hitInterval.Milliseconds);
+                }
+            });
         }
-        
         
         public void DisableHitMode()
         {
             State = PlayerState.Staying;
         }
-        
+
+        public void ChangeBaseTower(ITower tower)
+        {
+            BaseTower = tower;
+        }
+
         private bool TryHitTopTowerLayer()
         {
             if (BaseTower.GetTopTowerLayer(out var topTowerLayer) == false)
                 return false;
             
-            topTowerLayer.Hit(hittable: this, worldPosition: _xPosition);
+            topTowerLayer.Hit(hittable: this, worldPosition: Position.XPosition);
             return true;
         }
         
         private void MoveForward(float position)
         {
-            while (true)
-            {
-                var positionCapacity = 1 - _xPosition;
+            var xPosition = Position.XPosition;
             
-                if (position > positionCapacity)
-                {
-                    position -= positionCapacity;
-                    _xPosition = 0;
-                }
-                else
-                {
-                    _xPosition += position;
-                    break;
-                }
-            }
+            Position = new Position(Position.RowPosition, (xPosition+position).Clamp(0, 1));
         }
 
 

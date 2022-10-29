@@ -1,7 +1,7 @@
-using HelixJump.Arguments;
 using HelixJump.Core.Interfaces.Tower;
+using HelixJump.Game.Arguments;
 
-namespace HelixJump.Interfaces
+namespace HelixJump.Game.Interfaces
 {
     public interface ITowerLayerPartCreator
     {

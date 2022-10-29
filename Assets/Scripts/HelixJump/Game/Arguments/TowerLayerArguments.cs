@@ -1,6 +1,6 @@
 using System.Collections.Generic;
 
-namespace HelixJump.Arguments
+namespace HelixJump.Game.Arguments
 {
     public class TowerLayerArguments
     {

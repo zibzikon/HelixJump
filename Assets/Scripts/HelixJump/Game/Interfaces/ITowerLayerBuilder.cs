@@ -1,6 +1,6 @@
 using HelixJump.Core.Interfaces.Tower;
 
-namespace HelixJump.Interfaces
+namespace HelixJump.Game.Interfaces
 {
     public interface ITowerLayerBuilder
     {

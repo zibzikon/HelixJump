@@ -1,36 +1,38 @@
 using System;
 using System.Threading.Tasks;
 using HelixJump.Core.Interfaces;
+using HelixJump.Game.Interfaces;
 
 namespace HelixJump.Game.Input
 {
-    public class PlayerInput : DefaultInput
+    public class PlayerInput : DefaultInput, IPlayerInput
+
     {
-        private readonly IPlayer _player;
+    private readonly IPlayer _player;
 
-        public PlayerInput(IPlayer player)
-        {
-            _player = player;
-        }
-        
-        protected override void OnLeftMouseButtonDown()
-        {
-            EnablePlayerHitMode();
-        }
+    public PlayerInput(IPlayer player)
+    {
+        _player = player;
+    }
 
-        protected override void OnLeftMouseButtonUp()
-        {
-            DisablePlayerHitMode();
-        }
+    protected override void OnLeftMouseButtonDown()
+    {
+        EnablePlayerHitMode();
+    }
 
-        private void EnablePlayerHitMode()
-        {
-            _player.EnableHitMode();
-        }
+    protected override void OnLeftMouseButtonUp()
+    {
+        DisablePlayerHitMode();
+    }
 
-        private void DisablePlayerHitMode()
-        {
-            _player.DisableHitMode();
-        }
+    private void EnablePlayerHitMode()
+    {
+        _player.EnableHitMode();
+    }
+
+    private void DisablePlayerHitMode()
+    {
+        _player.DisableHitMode();
+    }
     }
 }

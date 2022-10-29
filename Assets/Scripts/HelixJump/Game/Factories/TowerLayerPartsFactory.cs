@@ -1,11 +1,11 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using HelixJump.Arguments;
 using HelixJump.Core.Interfaces.Tower;
-using HelixJump.Interfaces;
+using HelixJump.Game.Arguments;
+using HelixJump.Game.Interfaces;
 
-namespace HelixJump.Factories
+namespace HelixJump.Game.Factories
 {
     public class TowerLayerPartsFactory
     {

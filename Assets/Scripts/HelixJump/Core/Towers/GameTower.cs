@@ -11,30 +11,38 @@ namespace HelixJump.Core.Towers
 {
     public class GameTower : ITower
     {
-        private readonly Stack<ITowerLayer> _towerLayers;
         
-        public Resolution Resolution { get; }
+        public Resolution Capacity { get; private set; }
+        
         public IEnumerable<ITowerLayer> TowerLayers => _towerLayers;
+        
         public TowerType Type { get; }
 
-        public TaskCompletionSource<bool> DestroyedTaskCompletionSource { get; } = new();
-        public GameTower(Stack<ITowerLayer> towerLayers, TowerType type, Resolution resolution)
+        public Task<bool> DestroyedTask => _destroyedTaskCompletionSource.Task;
+        
+        private readonly TaskCompletionSource<bool> _destroyedTaskCompletionSource = new();
+        
+        private readonly Stack<ITowerLayer> _towerLayers;
+        
+        public GameTower(Stack<ITowerLayer> towerLayers, TowerType type, Resolution capacity)
         {
             Type = type;
-            Resolution = resolution;
+            Capacity = capacity;
             _towerLayers = new Stack<ITowerLayer>();
-
-            
             
             if (towerLayers.Any(x => x == null))
                 throw new NullReferenceException($"Enumerable: {towerLayers} contains null value");
 
             _towerLayers = towerLayers;
+            
+            foreach (var towerLayer in _towerLayers)
+                OnTowerLayerDestroyed(towerLayer);
+            
         }
 
         private async void OnTowerLayerDestroyed(ITowerLayer towerLayer)
         {
-            await towerLayer.DestroyedTaskCompletionSource.Task;
+            await towerLayer.DestroyedTask;
 
             if (_towerLayers.Any() == false)
             {
@@ -46,7 +54,7 @@ namespace HelixJump.Core.Towers
                 throw new InvalidProgramException($"Tower layer:{towerLayer} in tower {this} cannot be destroyed, because is not top layer");
 
             _towerLayers.Pop();
-            
+            Capacity = new Resolution(Capacity.Value - 1);
             if (_towerLayers.Any() == false)
                 Destroy();
         }
@@ -62,9 +70,10 @@ namespace HelixJump.Core.Towers
             return _towerLayers.TryPeek(out resultTowerLayer);
         }
 
+
         public void Destroy()
         {
-           DestroyedTaskCompletionSource.SetResult(true);
+           _destroyedTaskCompletionSource.SetResult(true);
         }
     }
 }

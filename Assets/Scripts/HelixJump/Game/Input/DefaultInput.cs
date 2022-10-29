@@ -1,4 +1,4 @@
-using HelixJump.Interfaces;
+using HelixJump.Game.Interfaces;
 
 namespace HelixJump.Game.Input
 {

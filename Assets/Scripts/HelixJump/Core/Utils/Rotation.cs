@@ -1,3 +1,5 @@
+using HelixJump.Game.Extensions;
+
 namespace HelixJump.Core.Utils
 {
     public struct Rotation
@@ -6,7 +8,7 @@ namespace HelixJump.Core.Utils
 
         public Rotation(float value)
         {
-            Value = value;
+            Value = value.Clamp(0, 360);
         }
 
         public static Rotation operator +(Rotation left, Rotation right) => new Rotation(left.Value + right.Value);

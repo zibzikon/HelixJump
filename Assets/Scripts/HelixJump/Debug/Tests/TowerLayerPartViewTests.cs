@@ -1,4 +1,4 @@
-namespace HelixJump.Tests
+namespace HelixJump.Debug.Tests
 {
     public class TowerLayerPartViewTests
     {

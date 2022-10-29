@@ -1,15 +1,13 @@
 using System;
-using System.Collections.Generic;
 using System.Linq;
-using HelixJump.Arguments;
-using HelixJump.Core;
 using HelixJump.Core.Interfaces.Tower;
 using HelixJump.Core.Towers.Layers;
 using HelixJump.Core.Utils;
-using HelixJump.Factories;
-using HelixJump.Interfaces;
+using HelixJump.Game.Arguments;
+using HelixJump.Game.Factories;
+using HelixJump.Game.Interfaces;
 
-namespace HelixJump.Creators
+namespace HelixJump.Game.Creators
 {
     public class DefaultTowerLayerCreator : ITowerLayerCreator
     {

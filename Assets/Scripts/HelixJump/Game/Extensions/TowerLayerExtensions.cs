@@ -15,12 +15,11 @@ namespace HelixJump.Game.Extensions
             var nextTowerLayerRotation = oneTowerLayerPartRotationScaler;
             for (var i = 0; i < towerLayer.Resolution.Value; i++)
             {
-                if (rotation <= nextTowerLayerRotation)
+                if (rotation -towerLayer.Rotation.Value <= nextTowerLayerRotation)
                 {
                     correctPosition = i;
                     break;
                 }
-
                 nextTowerLayerRotation += oneTowerLayerPartRotationScaler;
             }
 

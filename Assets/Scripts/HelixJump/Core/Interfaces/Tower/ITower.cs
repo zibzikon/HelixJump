@@ -10,7 +10,7 @@ namespace HelixJump.Core.Interfaces.Tower
     {
         void RemoveTopTowerLayer();
         TowerType Type { get; }
-        Resolution Resolution { get; }
+        Resolution Capacity { get; }
         IEnumerable<ITowerLayer> TowerLayers { get; }
         bool GetTopTowerLayer(out ITowerLayer resultTowerLayer);
     }
