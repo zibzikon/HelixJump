@@ -6,7 +6,9 @@ namespace HelixJump.Game.Interfaces
     {
         Task<IGameObject> ResetAndDisabledTask { get; }
 
+        bool Disabled { get; }
         void ResetAndDisable();
+        void Enable();
         IGameObject Instantiate();
     }
 }

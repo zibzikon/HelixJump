@@ -1,12 +1,13 @@
 using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
 using HelixJump.Core.Interfaces.Tower;
 using HelixJump.Core.Utils;
 using HelixJump.Game.Arguments;
 using HelixJump.Game.Extensions;
 using HelixJump.Game.Factories;
-using HelixJump.Game.Interfaces;
+using HelixJump.Game.Interfaces.Builders.Tower;
 
 namespace HelixJump.Game.Builders
 {
@@ -26,20 +27,36 @@ namespace HelixJump.Game.Builders
                 SelectRandomTowersByDifficulty(_towersArguments.ToArray(), difficulty);
 
             var towerArguments = CombineTowerArgumentsCollection(towerArgumentsCollection);
-            return _towerFactory.Get(towerArguments);
+            return _ = _towerFactory.Get(towerArguments);
         }
 
         private TowerArguments CombineTowerArgumentsCollection(IEnumerable<TowerArguments> towerArgumentsCollection)
         {
             var sumDifficulty = 0;
             var towerLayerArgumentsList = new List<TowerLayerArguments>();
-            foreach (var towerArguments in towerArgumentsCollection)
+            var sumCapacity = 0;
+            var towerArgumentsEnumerable = towerArgumentsCollection as TowerArguments[] ?? towerArgumentsCollection.ToArray();
+            var type = towerArgumentsEnumerable.Select(x => x.Type).Distinct().SelectRandomItem() 
+                       ?? throw new ArgumentNullException();
+
+            var towerLayers = towerArgumentsEnumerable.Where(x => x.Type == type).ToArray();
+            foreach (var towerArguments in towerLayers)
             {
-                sumDifficulty += Int32.Parse(towerArguments.Difficulty);
+                sumCapacity += towerArguments.Capacity.ToInt32();
+                sumDifficulty += towerArguments.Difficulty.ToInt32();
                 towerLayerArgumentsList.AddRange(towerArguments.TowerLayers);
             }
+            
+            var layerRotationStep = towerLayers.Select(x => x.LayerRotationStep.ToFloat()).Sum() / towerLayers.Count();
 
-            return _ = new TowerArguments() { TowerLayers = towerLayerArgumentsList, Difficulty = sumDifficulty.ToString() };
+            return new TowerArguments()
+            {
+                TowerLayers = towerLayerArgumentsList,
+                Capacity = sumCapacity.ToString(),
+                Difficulty = sumDifficulty.ToString(),
+                LayerRotationStep = layerRotationStep.ToString(CultureInfo.InvariantCulture),
+                Type = type
+            };
         }
         
         private IEnumerable<TowerArguments> SelectRandomTowersByDifficulty(TowerArguments[] towersArguments, int difficulty)
@@ -50,7 +67,7 @@ namespace HelixJump.Game.Builders
 
             while (sumDifficulty < difficulty)
             {
-                var index = random.Next(0, towersArguments.Count());
+                var index = random.Next(0, towersArguments.Length - 1);
                 var tower = towersArguments[index];
                 var sum = sumDifficulty + Int32.Parse(tower.Difficulty);
 

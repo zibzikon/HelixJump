@@ -1,5 +1,4 @@
 using System.Collections.Generic;
-using HelixJump.Core.Enums.Tower;
 using HelixJump.Core.Interfaces;
 using HelixJump.Core.Interfaces.Tower;
 
@@ -7,7 +6,7 @@ namespace HelixJump.Core.Towers.Layers.Parts
 {
     public class WeaklyTowerLayerPart : AbstractTowerLayerPart
     {
-        public override TowerLayerPartType Type => TowerLayerPartType.Weakly;
+        public override string Type => "weakly";
 
         public WeaklyTowerLayerPart(IEnumerable<ITowerLayerPartModifier> towerLayerPartModifiers = default) : base(towerLayerPartModifiers)
         {

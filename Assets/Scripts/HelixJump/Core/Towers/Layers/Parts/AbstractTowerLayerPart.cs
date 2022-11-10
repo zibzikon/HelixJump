@@ -1,6 +1,6 @@
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
-using HelixJump.Core.Enums.Tower;
 using HelixJump.Core.Interfaces;
 using HelixJump.Core.Interfaces.Tower;
 
@@ -9,7 +9,7 @@ namespace HelixJump.Core.Towers.Layers.Parts
     public abstract class AbstractTowerLayerPart : ITowerLayerPart
     {
         
-        public abstract TowerLayerPartType Type { get; }
+        public abstract string Type { get; }
         public Task<bool> BrokenTask => _brokenTaskCompletionSource.Task;
         public Task<bool> DestroyedTask => _destroyedTaskCompletionSource.Task;
 
@@ -27,9 +27,9 @@ namespace HelixJump.Core.Towers.Layers.Parts
         {
             var hitter = hitInfo.Hitter;
             
-            if (_towerLayerPartModifiers is not null)
+            /*if (_towerLayerPartModifiers is not null && _towerLayerPartModifiers.Any())
                 foreach (var towerLayerPartModifier in _towerLayerPartModifiers)
-                    towerLayerPartModifier.OnTowerLayerHit(new TowerLayerPartHitInfo(this, hitter));
+                    towerLayerPartModifier.OnTowerLayerHit(new TowerLayerPartHitInfo(this, hitter));*/
 
             Hit(hitter);
         }

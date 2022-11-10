@@ -10,14 +10,15 @@ using HelixJump.Game.Extensions;
 
 namespace HelixJump.Core
 {
-    public class Player : IPlayer
+    public class Player : IPlayer, IPause
     {
+        
+        public bool Paused { get; private set; }
         
         public PlayerState State { get; private set; }
 
-        public TaskCompletionSource<IHitInfo> PlayerHitTaskCompletionSource { get; } = new ();
-
         public Score Score { get; private set; }
+        
         public ITower BaseTower { get; private set; }
 
         public Position Position 
@@ -26,15 +27,18 @@ namespace HelixJump.Core
             private set => _position = value; 
         }
 
+        public Task<bool> PlayerHitTask => _playerHitTaskCompletionSource.Task;
+
+        private readonly TaskCompletionSource<bool> _playerHitTaskCompletionSource = new ();
+
         private CancellationTokenSource _movingCancellationTokenSource = new ();
         
         private readonly TimeSpan _hitInterval;
         private readonly TimeSpan _movingInterval;
         private Position _position;
 
-        public Player(ITower baseTower, TimeSpan hitInterval , TimeSpan movingInterval)
+        public Player(TimeSpan hitInterval , TimeSpan movingInterval)
         {
-            BaseTower = baseTower;
             _hitInterval = hitInterval;
             _movingInterval = movingInterval;
         }
@@ -42,25 +46,26 @@ namespace HelixJump.Core
         public void Hit(IHitInfo hitInfo)
         {
             Destroy();
-            PlayerHitTaskCompletionSource.TrySetResult(hitInfo);
+            _playerHitTaskCompletionSource.TrySetResult(true);
         }
 
         public void Destroy()
         {
             if (State == PlayerState.Hitting)
                 DisableHitMode();
-            
         }
         
         public async void StartMoving()
         {
             const float movingStep = 0.001f;
             var cancellationToken = _movingCancellationTokenSource.Token;
+
             while (cancellationToken.IsCancellationRequested == false)
             {
                 await Task.Delay(_movingInterval.Milliseconds);
                 MoveForward(movingStep);
             }
+            
         }
         
         public void StopMoving()
@@ -79,18 +84,19 @@ namespace HelixJump.Core
             Score = new Score(Score.Value - score);
         }
 
-        public void EnableHitMode()
+        public async void EnableHitMode()
         {
             State = PlayerState.Hitting;
-            Task.Run(async () =>
+
+            while (State == PlayerState.Hitting)
             {
-                while (State == PlayerState.Hitting)
-                {
-                    if (TryHitTopTowerLayer() == false)
-                        DisableHitMode();
-                    await Task.Delay(_hitInterval.Milliseconds);
-                }
-            });
+                UnityEngine.Debug.Log("Hit");
+                
+                if (TryHitTopTowerLayer() == false)
+                    DisableHitMode();
+                await Task.Delay(_hitInterval.Milliseconds);
+            }
+          
         }
         
         public void DisableHitMode()
@@ -98,7 +104,19 @@ namespace HelixJump.Core
             State = PlayerState.Staying;
         }
 
-        public void ChangeBaseTower(ITower tower)
+        public void Pause()
+        {
+            StopMoving();
+            Paused = true;
+        }
+
+        public void Resume()
+        {
+            StartMoving();
+            Paused = true;
+        }
+        
+        public void SetBaseTower(ITower tower)
         {
             BaseTower = tower;
         }
@@ -119,7 +137,5 @@ namespace HelixJump.Core
             Position = new Position(Position.RowPosition, (xPosition+position).Clamp(0, 1));
         }
 
-
-       
     }
 }

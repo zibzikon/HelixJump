@@ -2,26 +2,25 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using HelixJump.Core.Interfaces.Tower;
+using HelixJump.Core.Utils;
 using HelixJump.Game.Arguments;
 using HelixJump.Game.Interfaces;
+using HelixJump.Game.Interfaces.Creators.Tower;
 
 namespace HelixJump.Game.Factories
 {
     public class TowerLayerFactory
     {
-        private readonly Dictionary<string, ITowerLayerCreator> _creators;
+        private readonly ITowerLayerCreator _creator;
 
-        public TowerLayerFactory(IEnumerable<ITowerLayerCreator> creators)
+        public TowerLayerFactory(ITowerLayerCreator creator)
         {
-            _creators = creators.ToDictionary(x => x.Type);
+            _creator = creator;
         }
 
         public ITowerLayer CreateTowerLayer(TowerLayerArguments towerLayerArguments)
         {
-            var towerLayerType = towerLayerArguments.Type;
-            if (!_creators.TryGetValue(towerLayerType, out var towerLayerCreator))
-                throw new ApplicationException($"No tower layers with type {towerLayerType}");
-            return _ = towerLayerCreator.Create(towerLayerArguments);
+            return _creator.Create(towerLayerArguments);
         }
     }
 }

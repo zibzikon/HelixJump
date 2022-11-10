@@ -4,6 +4,7 @@ using System.Linq;
 using HelixJump.Core.Interfaces.Tower;
 using HelixJump.Game.Arguments;
 using HelixJump.Game.Interfaces;
+using HelixJump.Game.Interfaces.Creators.Tower;
 
 namespace HelixJump.Game.Factories
 {
@@ -20,7 +21,7 @@ namespace HelixJump.Game.Factories
         {
             var towerLayerPartType = towerLayerPartArguments.Type;
             if (!_creators.TryGetValue(towerLayerPartType, out var towerLayerPartCreator))
-                throw new ApplicationException($"No tower layers with type {towerLayerPartType}");
+                throw new ApplicationException($"No tower layer part creator with type {towerLayerPartType}");
             return _ = towerLayerPartCreator.Create(towerLayerPartArguments);
         }
     }

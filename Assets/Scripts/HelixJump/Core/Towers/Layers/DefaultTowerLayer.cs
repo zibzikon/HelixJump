@@ -14,14 +14,12 @@ namespace HelixJump.Core.Towers.Layers
         private readonly ITowerLayerPart[] _parts;
         public Resolution Resolution { get;  }
         private TaskCompletionSource<bool> _destroyedTaskCompletionSource = new (); 
-        public Rotation Rotation { get; }
         private readonly CancellationTokenSource _asyncMethodsAfterDestroyingCancellationTokenSource = new ();
 
         public Task<bool> DestroyedTask => _destroyedTaskCompletionSource.Task;
-        public DefaultTowerLayer(Resolution resolution, Rotation rotation, IEnumerable<ITowerLayerPart> layerParts)
+        public DefaultTowerLayer(Resolution resolution, IEnumerable<ITowerLayerPart> layerParts)
         {
             Resolution = resolution;
-            Rotation = rotation;
 
             var towerLayerParts = layerParts as ITowerLayerPart[] ?? layerParts.ToArray();
             

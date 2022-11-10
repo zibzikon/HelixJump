@@ -5,7 +5,7 @@ namespace HelixJump.Game.Interfaces
 {
     public interface IGameObjectCreator
     {
-        public T Create<T>(T prefab) where T : IGameObject;
+        T Create<T>(T prefab) where T : IGameObject;
 
     }
 }

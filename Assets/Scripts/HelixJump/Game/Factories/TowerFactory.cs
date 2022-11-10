@@ -1,6 +1,7 @@
 using HelixJump.Core.Interfaces.Tower;
 using HelixJump.Game.Arguments;
 using HelixJump.Game.Interfaces;
+using HelixJump.Game.Interfaces.Creators.Tower;
 
 namespace HelixJump.Game.Factories
 {
