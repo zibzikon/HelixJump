@@ -11,14 +11,12 @@ namespace HelixJump.GameView.UI
 {
     public class GameUI : MonoBehaviour, IGameUI
     {
-        public Task<bool> RestartGameButtonPressedTask => restartGameScreen.ButtonPressedTask;
-        public Task<bool> MoveNextLevelButtonPressedTask => moveNextLevelGameScreen.ButtonPressedTask;
-        public Task<bool> PauseGameButtonPressedTask => pauseGameScreen.ButtonPressedTask;
+        public event Action RestartGameButtonPressed;
+        public event Action MoveNextLevelButtonPressed;
+        public event Action PauseGameButtonPressed;
 
         private bool _isInitialized;
-
-        private CancellationTokenSource _cancellationTokenSource = new();
-
+        
         [SerializeField] private GameScreen restartGameScreen;
         [SerializeField] private GameScreen moveNextLevelGameScreen;
         [SerializeField] private GameScreen pauseGameScreen;
@@ -33,32 +31,52 @@ namespace HelixJump.GameView.UI
             
             _game = game;
             _isInitialized = true;
-            SubscribeEvents();
+            RegisterEvents();
         }
 
-        private void SubscribeEvents()
+        private void OnDisable()
         {
-            var cancellationToken = _cancellationTokenSource.Token;
-            
-            OnTaskEnded(()=> _game.GameLoseTask, restartGameScreen, cancellationToken);
-            OnTaskEnded(()=> _game.GameWinTask, moveNextLevelGameScreen, cancellationToken);
+            UnRegisterEvents();
+        }
+
+        private void RegisterEvents()
+        {
+            restartGameScreen.ButtonPressed += RestartGameButtonPressed;
+            moveNextLevelGameScreen.ButtonPressed += MoveNextLevelButtonPressed;
+            pauseGameScreen.ButtonPressed += PauseGameButtonPressed;
+
+            _game.GameLose += OnGameLose;
+            _game.GameWin += OnGameWin;
         }
         
-
-        private async void OnTaskEnded<T> (Func<Task<T>> getTaskFunc, GameScreen screen, CancellationToken cancellationToken)
+        private void UnRegisterEvents()
         {
-            await getTaskFunc.Invoke();
+            restartGameScreen.ButtonPressed -= RestartGameButtonPressed;
+            moveNextLevelGameScreen.ButtonPressed -= MoveNextLevelButtonPressed;
+            pauseGameScreen.ButtonPressed -= PauseGameButtonPressed;
             
-            if (cancellationToken.IsCancellationRequested)
-                return;
-            
-            if(_enabledGameScreen is not null) _enabledGameScreen.Disable();
-            
-            _enabledGameScreen = screen;
-            screen.Enable();
-            
-            OnTaskEnded(getTaskFunc, screen, cancellationToken);
+            _game.GameLose -= OnGameLose;
+            _game.GameWin -= OnGameWin;
         }
 
+        private void OnGameWin()
+        {
+            ChangeBaseScreen(moveNextLevelGameScreen);
+        }
+
+        private void OnGameLose()
+        {
+            ChangeBaseScreen(restartGameScreen);
+        }
+
+        private void ChangeBaseScreen(GameScreen gameScreen)
+        {
+            if (_enabledGameScreen is not null)
+                _enabledGameScreen.Disable();
+
+            _enabledGameScreen = gameScreen;
+            _enabledGameScreen.Enable();
+        }
+        
     }
 }

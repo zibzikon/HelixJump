@@ -1,5 +1,5 @@
+using System;
 using System.Collections.Generic;
-using System.Threading.Tasks;
 using HelixJump.Core.Utils;
 
 namespace HelixJump.Core.Interfaces.Tower
@@ -11,7 +11,7 @@ namespace HelixJump.Core.Interfaces.Tower
         Resolution Capacity { get; }
         Rotation RotationStep { get; }
         IEnumerable<ITowerLayer> TowerLayers { get; }
-        Task<ITower> LayerDestroyedTaskChangedTask { get; }
+        event Action LayerDestroyed;
         bool GetTopTowerLayer(out ITowerLayer resultTowerLayer);
     }
 };

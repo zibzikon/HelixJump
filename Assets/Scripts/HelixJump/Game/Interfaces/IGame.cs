@@ -1,3 +1,4 @@
+using System;
 using System.Threading.Tasks;
 using HelixJump.Core;
 using HelixJump.Core.Interfaces;
@@ -10,9 +11,9 @@ namespace HelixJump.Game.Interfaces
         int Difficulty { get; }
         ITower CurrentTower { get; }
         IPlayer CurrentPlayer { get; }
-        Task<ITower> GameTowerChangedTask { get; }
-        Task<IGame> GameLoseTask { get; }
-        Task<IGame> GameWinTask { get; }
+        event Action LevelChanged;
+        event Action GameLose;
+        event Action GameWin;
         void Start();
         void RestartLevel();
         void MoveNextLevel();

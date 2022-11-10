@@ -1,3 +1,4 @@
+using System;
 using System.Threading.Tasks;
 
 namespace HelixJump.Core.Interfaces.Tower
@@ -5,7 +6,7 @@ namespace HelixJump.Core.Interfaces.Tower
     public interface ITowerLayerPart : IHittable, IDestroyable
     {
         string Type { get; }
-        Task<bool> BrokenTask { get; }
+        event Action<ITowerLayerPart> Broken;
         void Break();
     }
 }

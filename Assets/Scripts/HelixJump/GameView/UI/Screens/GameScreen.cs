@@ -1,3 +1,4 @@
+using System;
 using System.Threading.Tasks;
 using HelixJump.GameView.UI.Interfaces;
 using UnityEngine;
@@ -7,37 +8,35 @@ namespace HelixJump.GameView.UI.Screens
 {
     public class GameScreen : MonoBehaviour, IGameScreen
     {
-        public Task<bool> ButtonPressedTask => _buttonPressedTaskCompletionSource.Task;
-        private TaskCompletionSource<bool> _buttonPressedTaskCompletionSource = new ();
+        public event Action ButtonPressed;
 
         [SerializeField] private Button button;
         
         public void Enable()
         {
             gameObject.SetActive(true);
-            SubscribeEvents();
+            RegisterEvents();
         }
 
         public void Disable()
         {
-            UnSubscribeEvents();
+            UnRegisterEvents();
             gameObject.SetActive(false);
         }
 
-        private void SubscribeEvents()
+        private void RegisterEvents()
         {
             button.onClick.AddListener(OnMoveNextLevelButtonPressed);
         }
 
-        private void UnSubscribeEvents()
+        private void UnRegisterEvents()
         {
             button.onClick.RemoveListener(OnMoveNextLevelButtonPressed);
         }
 
         private void OnMoveNextLevelButtonPressed()
         {
-            _buttonPressedTaskCompletionSource.TrySetResult(true);
-            _buttonPressedTaskCompletionSource = new();
+            ButtonPressed?.Invoke();
         }
     }
 }

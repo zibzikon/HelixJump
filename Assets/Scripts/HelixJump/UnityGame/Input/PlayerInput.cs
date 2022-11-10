@@ -1,25 +1,21 @@
+using System;
 using System.Threading.Tasks;
 using HelixJump.Game.Interfaces;
 namespace HelixJump.UnityGame.Input
 {
     public class PlayerInput : DefaultInput, IPlayerInput
     {
-        public Task<bool> EnableHitModeTask => _enableHitModeTaskCompletionSource.Task;
-        public Task<bool> DisableHitModeTask => _disableHitModeTaskCompletionSource.Task;
-
-        private TaskCompletionSource<bool> _enableHitModeTaskCompletionSource = new();
-        private TaskCompletionSource<bool> _disableHitModeTaskCompletionSource = new();
+        public event Action EnableHitMode;
+        public event Action DisableHitMode;
 
         protected override void OnLeftMouseButtonDown()
         {
-            _enableHitModeTaskCompletionSource.TrySetResult(true);
-            _enableHitModeTaskCompletionSource = new();
+            EnableHitMode?.Invoke();
         }
 
         protected override void OnLeftMouseButtonUp()   
         {
-            _disableHitModeTaskCompletionSource.TrySetResult(true);
-            _disableHitModeTaskCompletionSource = new();
+            DisableHitMode?.Invoke();
         }
         
     }

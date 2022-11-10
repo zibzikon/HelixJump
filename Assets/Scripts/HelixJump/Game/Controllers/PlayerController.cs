@@ -10,7 +10,6 @@ namespace HelixJump.Game.Controllers
         private readonly IPlayer _player;
         private readonly IPlayerInput _playerInput;
         
-        private CancellationTokenSource _cancellationTokenSource = new();
         
         public PlayerController(IPlayer player, IPlayerInput playerInput)
         {
@@ -21,22 +20,25 @@ namespace HelixJump.Game.Controllers
         public void Enable()
         {
             _playerInput.Enable();
-            SubscribeEvents();
+            RegisterEvents();
         }
 
         public void Disable()
         {
             _playerInput.Disable();
-            _cancellationTokenSource.Cancel();
-            _cancellationTokenSource = new();
+            UnRegisterEvents();
         }
 
-        private void SubscribeEvents() 
+        private void RegisterEvents()
         {
-            var cancellationToken = _cancellationTokenSource.Token;
-            
-            TaskExtensions.OnTaskEnded(() => _playerInput.EnableHitModeTask, _player.EnableHitMode, cancellationToken);
-            TaskExtensions.OnTaskEnded(() => _playerInput.DisableHitModeTask, _player.DisableHitMode, cancellationToken);
+            _playerInput.EnableHitMode += _player.EnableHitMode;
+            _playerInput.DisableHitMode += _player.DisableHitMode;
+        }
+        
+        private void UnRegisterEvents()
+        {
+            _playerInput.EnableHitMode -= _player.EnableHitMode;
+            _playerInput.DisableHitMode -= _player.DisableHitMode;
         }
     }
 }

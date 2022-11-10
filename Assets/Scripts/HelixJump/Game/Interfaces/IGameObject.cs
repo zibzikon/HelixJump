@@ -1,11 +1,11 @@
+using System;
 using System.Threading.Tasks;
 
 namespace HelixJump.Game.Interfaces
 {
-    public interface IGameObject 
+    public interface IGameObject
     {
-        Task<IGameObject> ResetAndDisabledTask { get; }
-
+        event Action<IGameObject> ResetAndDisabled;
         bool Disabled { get; }
         void ResetAndDisable();
         void Enable();

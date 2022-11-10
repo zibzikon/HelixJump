@@ -5,7 +5,7 @@ namespace HelixJump.Core.Interfaces
 {
     public interface IDestroyable
     {
-        Task<bool> DestroyedTask { get; }
+        event Action<IDestroyable> Destroyed;
         void Destroy();
     }
 }

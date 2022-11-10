@@ -27,9 +27,7 @@ namespace HelixJump.Core
             private set => _position = value; 
         }
 
-        public Task<bool> PlayerHitTask => _playerHitTaskCompletionSource.Task;
-
-        private readonly TaskCompletionSource<bool> _playerHitTaskCompletionSource = new ();
+        public event Action<IDestroyable> Destroyed;
 
         private CancellationTokenSource _movingCancellationTokenSource = new ();
         
@@ -46,13 +44,13 @@ namespace HelixJump.Core
         public void Hit(IHitInfo hitInfo)
         {
             Destroy();
-            _playerHitTaskCompletionSource.TrySetResult(true);
         }
 
         public void Destroy()
         {
             if (State == PlayerState.Hitting)
                 DisableHitMode();
+            Destroyed?.Invoke(this);
         }
         
         public async void StartMoving()
@@ -90,8 +88,6 @@ namespace HelixJump.Core
 
             while (State == PlayerState.Hitting)
             {
-                UnityEngine.Debug.Log("Hit");
-                
                 if (TryHitTopTowerLayer() == false)
                     DisableHitMode();
                 await Task.Delay(_hitInterval.Milliseconds);

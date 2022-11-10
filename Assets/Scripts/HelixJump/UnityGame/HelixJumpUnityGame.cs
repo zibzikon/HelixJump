@@ -17,7 +17,6 @@ namespace HelixJump.UnityGame
         private readonly IGame _gameBase;
         private readonly IUnityGameArguments _arguments;
         private TowerView _currentTowerView;
-        private CancellationTokenSource _disableGameCancellationTokenSource = new ();
        
         public HelixJumpUnityGame(IGame gameBase, IUnityGameArguments arguments)
         {
@@ -28,22 +27,27 @@ namespace HelixJump.UnityGame
         public async void Start()
         {
             _gameBase.Start();
-            SubscribeEvents();
+            RegisterEvents();
             await GenerateTowerViewAsync();
             GeneratePlayerView();
         }
         
-        private void SubscribeEvents()
+        private void RegisterEvents()
         {
             var gameUI = _arguments.UnityGameUIArguments.GameUI;
 
-            var cancellationToken = _disableGameCancellationTokenSource.Token;
-            OnTaskEnded(()=> _gameBase.GameTowerChangedTask, OnGameBaseLevelChanged, cancellationToken);
-            
-            OnTaskEnded(()=> gameUI.RestartGameButtonPressedTask, OnRestartGameButtonPressed, cancellationToken);
-            OnTaskEnded(()=> gameUI.PauseGameButtonPressedTask, OnPauseGameButtonPressed,cancellationToken);
-            OnTaskEnded(()=> gameUI.MoveNextLevelButtonPressedTask, OnMoveNextLevelButtonPressed, cancellationToken);
-           
+            gameUI.PauseGameButtonPressed += OnPauseGameButtonPressed;
+            gameUI.RestartGameButtonPressed += OnRestartGameButtonPressed;
+            gameUI.MoveNextLevelButtonPressed += OnMoveNextLevelButtonPressed;
+        }
+        
+        private void UnRegisterEvents()
+        {
+            var gameUI = _arguments.UnityGameUIArguments.GameUI;
+
+            gameUI.PauseGameButtonPressed -= OnPauseGameButtonPressed;
+            gameUI.RestartGameButtonPressed -= OnRestartGameButtonPressed;
+            gameUI.MoveNextLevelButtonPressed -= OnMoveNextLevelButtonPressed;
         }
 
         private void GeneratePlayerView()
@@ -78,18 +82,5 @@ namespace HelixJump.UnityGame
         {
             _gameBase.MoveNextLevel();
         }
-        
-        private async void OnTaskEnded<T> (Func<Task<T>> getTaskFunc, Action action, CancellationToken cancellationToken)
-        {
-            await getTaskFunc.Invoke();
-            
-            if (cancellationToken.IsCancellationRequested)
-                return;
-            
-            action();
-            
-            OnTaskEnded(getTaskFunc, action, cancellationToken);
-        }
-
     }
 }

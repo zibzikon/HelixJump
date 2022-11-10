@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -10,12 +11,10 @@ namespace HelixJump.Core.Towers.Layers.Parts
     {
         
         public abstract string Type { get; }
-        public Task<bool> BrokenTask => _brokenTaskCompletionSource.Task;
-        public Task<bool> DestroyedTask => _destroyedTaskCompletionSource.Task;
+        public event Action<ITowerLayerPart> Broken;
+        public event Action<IDestroyable> Destroyed ;
 
         private readonly IEnumerable<ITowerLayerPartModifier> _towerLayerPartModifiers;
-        private TaskCompletionSource<bool> _brokenTaskCompletionSource = new();
-        private TaskCompletionSource<bool> _destroyedTaskCompletionSource = new (); 
         protected AbstractTowerLayerPart(IEnumerable<ITowerLayerPartModifier> towerLayerPartModifiers)
         {
             _towerLayerPartModifiers = towerLayerPartModifiers;
@@ -36,13 +35,12 @@ namespace HelixJump.Core.Towers.Layers.Parts
 
         public virtual void Destroy()
         {
-            _destroyedTaskCompletionSource.TrySetResult(true);
+            Destroyed?.Invoke(this);
         }
         
         public void Break()
         {
-            if(_brokenTaskCompletionSource.TrySetResult(true))
-                UnityEngine.Debug.Log("AAAAAAAAAA");
+            Broken?.Invoke(this);
         }
        
     }

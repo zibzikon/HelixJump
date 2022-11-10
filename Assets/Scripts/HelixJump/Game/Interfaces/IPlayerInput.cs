@@ -1,11 +1,12 @@
-using System.Threading.Tasks;
+
+using System;
 
 namespace HelixJump.Game.Interfaces
 {
     public interface IPlayerInput
     {
-        Task<bool> EnableHitModeTask { get; }
-        Task<bool> DisableHitModeTask { get; }
+        event Action EnableHitMode;
+        event Action DisableHitMode;
         void Enable();
         void Disable();
     }

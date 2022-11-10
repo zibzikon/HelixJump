@@ -1,3 +1,4 @@
+using System;
 using System.Threading;
 using System.Threading.Tasks;
 using HelixJump.Core.Interfaces;
@@ -17,17 +18,11 @@ namespace HelixJump.Game
 
         public ITower CurrentTower { get; private set; }
 
-        public Task<IGame> GameLoseTask => _gameLoseTaskCompletionSource.Task;
+        public event Action GameLose;
         
-        public Task<IGame> GameWinTask => _gameWinTaskCompletionSource.Task;
-        
-        private TaskCompletionSource<IGame> _gameLoseTaskCompletionSource= new();
-        
-        private TaskCompletionSource<IGame> _gameWinTaskCompletionSource= new();
-        
-        private TaskCompletionSource<ITower> _gameTowerChangedTaskCompletionSource = new();
-        
-        public Task<ITower> GameTowerChangedTask => _gameTowerChangedTaskCompletionSource.Task;
+        public event Action GameWin;
+
+        public event Action LevelChanged;
 
         public IPlayer CurrentPlayer { get; }
         
@@ -45,18 +40,22 @@ namespace HelixJump.Game
         public void Start()
         {
             ChangeLevel(Difficulty);
-            SubscribeEvents();
+            RegisterEvents();
             CurrentPlayer.StartMoving();
             
             _playerController.Enable();
         }
 
-        private void SubscribeEvents()
+        private void RegisterEvents()
         {
-            var cancellationToken = CancellationToken.None;
-            
-            TaskExtensions.OnTaskEnded(()=> CurrentPlayer.PlayerHitTask, OnPlayerHit, cancellationToken);
-            TaskExtensions.OnTaskEnded(()=> CurrentTower.LayerDestroyedTaskChangedTask, OnTowerDestroyed, cancellationToken);
+            CurrentPlayer.Destroyed += OnPlayerDestroyed;
+            CurrentTower.Destroyed += OnTowerDestroyed;
+        }
+        
+        private void UnRegisterEvents()
+        {
+            CurrentPlayer.Destroyed -= OnPlayerDestroyed;
+            CurrentTower.Destroyed -= OnTowerDestroyed;
         }
         
         public void RestartLevel()
@@ -83,15 +82,13 @@ namespace HelixJump.Game
         private void Lose()
         {
             CurrentPlayer.RemoveScore(CurrentTower.CalculateTowerScore().Value);
-            _gameLoseTaskCompletionSource.TrySetResult(this);
-            _gameLoseTaskCompletionSource = new();
+           
         }
 
         private void Win()
         {
             CurrentPlayer.AddScore(CurrentTower.CalculateTowerScore().Value);
-            _gameWinTaskCompletionSource.TrySetResult(this);
-            _gameWinTaskCompletionSource = new();
+            
         }
 
         private void AddDifficulty()
@@ -104,16 +101,15 @@ namespace HelixJump.Game
             CurrentTower = _towerBuilder.Build(difficulty);
             CurrentPlayer.SetBaseTower(CurrentTower);
             
-            _gameTowerChangedTaskCompletionSource.TrySetResult(CurrentTower);
-            _gameTowerChangedTaskCompletionSource = new();
+            LevelChanged?.Invoke();
         }
 
-        private void OnTowerDestroyed()
+        private void OnTowerDestroyed(IDestroyable destroyable)
         {
             Win();
         }
 
-        private void OnPlayerHit()
+        private void OnPlayerDestroyed(IDestroyable destroyable)
         {
             Lose();
         }

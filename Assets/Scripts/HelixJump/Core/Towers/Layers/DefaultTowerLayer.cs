@@ -12,11 +12,10 @@ namespace HelixJump.Core.Towers.Layers
     public class DefaultTowerLayer : ITowerLayer
     {
         private readonly ITowerLayerPart[] _parts;
+        private Action _destroyed;
         public Resolution Resolution { get;  }
-        private TaskCompletionSource<bool> _destroyedTaskCompletionSource = new (); 
-        private readonly CancellationTokenSource _asyncMethodsAfterDestroyingCancellationTokenSource = new ();
-
-        public Task<bool> DestroyedTask => _destroyedTaskCompletionSource.Task;
+        public event Action<IDestroyable> Destroyed;
+        
         public DefaultTowerLayer(Resolution resolution, IEnumerable<ITowerLayerPart> layerParts)
         {
             Resolution = resolution;
@@ -30,16 +29,24 @@ namespace HelixJump.Core.Towers.Layers
             
             _parts = towerLayerParts;
             
-            foreach (var towerLayerPart in _parts)
-                OnTowerLayerPartBreakAsync(towerLayerPart, _asyncMethodsAfterDestroyingCancellationTokenSource.Token);
+            RegisterEvents();
         }
 
-        private async void OnTowerLayerPartBreakAsync(ITowerLayerPart towerLayerPart, CancellationToken cancellationToken)
+        private void RegisterEvents()
         {
-            await towerLayerPart.BrokenTask;
-            if (cancellationToken.IsCancellationRequested)
-                return;
-           
+            foreach (var towerLayerPart in _parts)
+                towerLayerPart.Destroyed += OnTowerLayerPartBreak;
+            
+        }
+        
+        private void UnRegisterEvents()
+        {
+            foreach (var towerLayerPart in _parts)
+                towerLayerPart.Destroyed -= OnTowerLayerPartBreak;
+        }
+        
+        private void OnTowerLayerPartBreak(IDestroyable destroyable)
+        {
             Destroy();
         }
 
@@ -50,11 +57,10 @@ namespace HelixJump.Core.Towers.Layers
 
             return _parts[position];
         }
-
-
+        
         public void Destroy()
         {
-            _destroyedTaskCompletionSource.TrySetResult(true);
+            Destroyed?.Invoke(this);           
             
             foreach (var towerLayerPart in _parts)
                 towerLayerPart.Destroy();
