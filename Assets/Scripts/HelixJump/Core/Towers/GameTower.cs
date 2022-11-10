@@ -1,7 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Threading.Tasks;
+using HelixJump.Core.Interfaces;
 using HelixJump.Core.Interfaces.Tower;
 using HelixJump.Core.Utils;
 
@@ -17,12 +17,11 @@ namespace HelixJump.Core.Towers
         
         public string Type { get; }
 
-        public Task<ITower> LayerDestroyedTaskChangedTask => _layerDestroyedTaskCompletionSource.Task;
+        public event Action LayerDestroyed;
 
-        public Task<bool> DestroyedTask => _destroyedTaskCompletionSource.Task;
+        public event Action<IDestroyable> Destroyed;
         
-        private readonly TaskCompletionSource<bool> _destroyedTaskCompletionSource = new();
-        private readonly TaskCompletionSource<ITower> _layerDestroyedTaskCompletionSource = new();
+
         
         private readonly Stack<ITowerLayer> _towerLayers;
         
@@ -43,14 +42,14 @@ namespace HelixJump.Core.Towers
             
         }
 
-        private async void OnTowerLayerDestroyed(ITowerLayer towerLayer)
+        private void OnTowerLayerDestroyed(IDestroyable destroyable)
         {
-            await towerLayer.DestroyedTask;
-
+            var towerLayer = destroyable as ITowerLayer ?? throw new ApplicationException();
+            
             if (_towerLayers.Any() == false)
             {
                 Destroy();
-                return;;
+                return;
             }
             
             if (towerLayer != _towerLayers.Peek())
@@ -76,7 +75,7 @@ namespace HelixJump.Core.Towers
 
         public void Destroy()
         {
-           _destroyedTaskCompletionSource.SetResult(true);
+           Destroyed?.Invoke(this);
         }
     }
 }
